@@ -32,6 +32,25 @@ bitset<64> stringToBitset(char *data)
 	return resultBitset;
 }
 
+
+void swapBits(long long &source, const short& first, const short & second )
+{
+	long long mask = 1 << first;
+	
+//	std::cout << std::bitset<64>(source) << std::endl;
+	std::cout << std::bitset<64>(mask) << std::endl << std::endl;
+//	
+//	std::cout << std::bitset<8>((source & mask) << second) << std::endl;
+//	std::cout << std::bitset<8>((source >> second) & mask) << std::endl;
+//	std::cout << std::bitset<8>(source & ~mask) << std::endl;
+	
+	std::cout << std::bitset<64>(1 << second | mask) << std::endl << std::endl;
+	
+	source = ((source & mask) << second) | ((source >> second) & mask) | (source & ~(1 << second | mask));
+	
+//	std::cout << std::bitset<64>(source) << "+" << std::endl;
+}
+
 int main(int argc, const char * argv[])
 {
 	string inputString = "Hi, Ju!!";
@@ -60,6 +79,11 @@ int main(int argc, const char * argv[])
 	
 	cout << bitset<64>(foo) << endl;
 	int r = foo;
+	
+	swapBits(foo, 5, 7);
+	
+	std::cout << std::bitset<64>(foo) << "~~~" << std::endl;
+	
 //	cout << bitset<32>(r) << endl;
 	int l = foo >>= 32;
 	cout << bitset<32>(l) << endl << bitset<32>(r) << endl;
