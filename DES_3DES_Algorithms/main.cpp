@@ -33,20 +33,22 @@ bitset<64> stringToBitset(char *data)
 }
 
 
-void swapBits(long long &source, const short& first, const short & second )
+void swapBits(long long &source, const short &first, const short &second )
 {
 	long long mask = 1 << first;
 	
 //	std::cout << std::bitset<64>(source) << std::endl;
 	std::cout << std::bitset<64>(mask) << std::endl << std::endl;
-//	
-//	std::cout << std::bitset<8>((source & mask) << second) << std::endl;
-//	std::cout << std::bitset<8>((source >> second) & mask) << std::endl;
-//	std::cout << std::bitset<8>(source & ~mask) << std::endl;
+	
+	std::cout << std::bitset<8>((source & mask) << (second - first)) << std::endl;
+	std::cout << std::bitset<8>((source >> (second + first)) & mask) << std::endl;
+	std::cout << std::bitset<8>(source & ~(1 << (second) | mask)) << std::endl;
 	
 	std::cout << std::bitset<64>(1 << second | mask) << std::endl << std::endl;
 	
-	source = ((source & mask) << second) | ((source >> second) & mask) | (source & ~(1 << second | mask));
+	source = ((source & mask) << abs(second - first))
+				| ((source >> (second + first)) & mask)
+				| (source & ~(1 << second | mask));
 	
 //	std::cout << std::bitset<64>(source) << "+" << std::endl;
 }
@@ -58,7 +60,7 @@ int main(int argc, const char * argv[])
 	
 	long long foo = inputString[0];
 
-	cout << inputString.length() << endl;
+//	cout << inputString.length() << endl;
 	
 	
 	// превращаем 8 символов в последовательность битов. Для хранения используется long long
@@ -77,10 +79,12 @@ int main(int argc, const char * argv[])
 	foo <<= 8;
 	foo |= inputString[7];
 	
-	cout << bitset<64>(foo) << endl;
+	cout << bitset<64>(foo) << "++" << endl;
 	int r = foo;
 	
-	swapBits(foo, 5, 7);
+	
+	
+	swapBits(foo, 1, 5);
 	
 	std::cout << std::bitset<64>(foo) << "~~~" << std::endl;
 	
