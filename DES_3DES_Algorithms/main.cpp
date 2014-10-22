@@ -35,27 +35,32 @@ bitset<64> stringToBitset(char *data)
 
 void swapBits(long long &source, const short &first, const short &second )
 {
-	long long mask = 1 << first;
+	long long mask = (1 << second) | (1 << first);
 	
-//	std::cout << std::bitset<64>(source) << std::endl;
+	//	std::cout << std::bitset<64>(source) << std::endl;
 	std::cout << std::bitset<64>(mask) << std::endl << std::endl;
 	
-	std::cout << std::bitset<8>((source & mask) << (second - first)) << std::endl;
-	std::cout << std::bitset<8>((source >> (second + first)) & mask) << std::endl;
-	std::cout << std::bitset<8>(source & ~(1 << (second) | mask)) << std::endl;
+	std::cout << std::bitset<18>( (source & mask) << (abs(second - first)) & mask) << std::endl;
+	std::cout << std::bitset<18>((source >> abs(second - first)) & mask) << std::endl;
+	
+	std::cout << std::bitset<18>( (source & mask) << (abs(second - first)) | ((source >> abs(second - first)) & mask) ) << "-" << std::endl;
+	
+	std::cout << std::bitset<18>(source & ~(1 << (second) | mask)) << std::endl;
 	
 	std::cout << std::bitset<64>(1 << second | mask) << std::endl << std::endl;
 	
-	source = ((source & mask) << abs(second - first))
-				| ((source >> (second + first)) & mask)
-				| (source & ~(1 << second | mask));
+	source = (((source & mask) << abs(second - first)) & mask)
+			| ((source >> abs(second - first)) & mask)
+			| (source & ~mask);
 	
 //	std::cout << std::bitset<64>(source) << "+" << std::endl;
+	
+
 }
 
 int main(int argc, const char * argv[])
 {
-	string inputString = "Hi, Ju!!";
+	string inputString = "Hi, Jul!";
 //	bitset<64> bitMask (inputString);
 	
 	long long foo = inputString[0];
