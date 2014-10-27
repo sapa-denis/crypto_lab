@@ -58,6 +58,18 @@ void swapBits(long long &source, const short &first, const short &second )
 
 }
 
+void extension32To48(const int &word, long &extendedWord)
+{
+	extendedWord = 0;
+	
+	// Расширение слова в 32 бита до 48 бит, используя матрицу Е
+	//TODO: дописать остальные 45 элементов для расширения.
+	//TODO: не забывать, что из индексов таблицы Е нужно вычесть 1. Номера идут по строка слева-направо сверху-вниз
+	extendedWord |= ((word >> 31) & 1);
+	extendedWord |= ((word >> 00) & 1);
+	extendedWord |= ((word >> 01) & 1);
+}
+
 bool chackWeakKey(const long& key)
 {
 	return !(	(key - 0x0101010101010101)
@@ -73,6 +85,7 @@ int main(int argc, const char * argv[])
 	
 	long long decimalStringPresentation = inputString[0];
 	
+	long key = 0xBADACCE551111111;
 	
 	// превращаем 8 символов в последовательность битов. Для хранения используется long long
 	decimalStringPresentation <<= 8;
@@ -101,6 +114,7 @@ int main(int argc, const char * argv[])
 	int rigthPart = decimalStringPresentation;
 	int leftPart = decimalStringPresentation >>= 32;
 	cout << bitset<32>(leftPart) << endl << bitset<32>(rigthPart) << endl;
+	
 	
 	
 	
