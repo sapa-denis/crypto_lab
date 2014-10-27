@@ -56,6 +56,15 @@ void swapBits(long long &source, const short &first, const short &second )
 	
 }
 
+void startPermutation(long long &sourceDigit)
+{
+#warning TODO!!!
+	//Начальная перестановка, матрица IP. Всего 64 вызова
+	//TODO: дописать остальные 62 вызова перестановки.
+	swapBits(sourceDigit, 0, 57);
+	swapBits(sourceDigit, 1, 49);
+}
+
 void extension32To48(const int &word, long &extendedWord)
 {
 	extendedWord = 0;
@@ -107,11 +116,7 @@ int main(int argc, const char * argv[])
 	
 	cout << bitset<64>(decimalStringPresentation) << "++" << endl;
 	
-#warning TODO!!!
-	//Начальная перестановка, матрица IP. Всего 64 вызова
-	//TODO: дописать остальные 62 вызова перестановки.
-	swapBits(decimalStringPresentation, 0, 57);
-	swapBits(decimalStringPresentation, 1, 49);
+	startPermutation(decimalStringPresentation);
 	
 	
 	
