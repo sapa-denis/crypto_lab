@@ -37,7 +37,7 @@ void swapBits(long long &source, const short &first, const short &second )
 {
 	long long mask = (1 << second) | (1 << first);
 	
-	//	std::cout << std::bitset<64>(source) << std::endl;
+	/*
 	std::cout << std::bitset<64>(mask) << std::endl << std::endl;
 	
 	std::cout << std::bitset<18>( (source & mask) << (abs(second - first)) & mask) << std::endl;
@@ -48,20 +48,19 @@ void swapBits(long long &source, const short &first, const short &second )
 	std::cout << std::bitset<18>(source & ~(1 << (second) | mask)) << std::endl;
 	
 	std::cout << std::bitset<64>(1 << second | mask) << std::endl << std::endl;
+	*/
 	
 	source = (((source & mask) << abs(second - first)) & mask)
 			| ((source >> abs(second - first)) & mask)
 			| (source & ~mask);
 	
-//	std::cout << std::bitset<64>(source) << "+" << std::endl;
-	
-
 }
 
 void extension32To48(const int &word, long &extendedWord)
 {
 	extendedWord = 0;
 	
+#warning TODO!!!
 	// Расширение слова в 32 бита до 48 бит, используя матрицу Е
 	//TODO: дописать остальные 45 элементов для расширения.
 	//TODO: не забывать, что из индексов таблицы Е нужно вычесть 1. Номера идут по строка слева-направо сверху-вниз
@@ -70,6 +69,9 @@ void extension32To48(const int &word, long &extendedWord)
 	extendedWord |= ((word >> 01) & 1);
 }
 
+/*
+ Проверка слабого ключа
+ */
 bool chackWeakKey(const long& key)
 {
 	return !(	(key - 0x0101010101010101)
@@ -104,13 +106,16 @@ int main(int argc, const char * argv[])
 	decimalStringPresentation |= inputString[7];
 	
 	cout << bitset<64>(decimalStringPresentation) << "++" << endl;
-
+	
+#warning TODO!!!
 	//Начальная перестановка, матрица IP. Всего 64 вызова
-	//TODO: дописать остальные 63 вызова перестановки.
-	swapBits(decimalStringPresentation, 0, 58);
+	//TODO: дописать остальные 62 вызова перестановки.
+	swapBits(decimalStringPresentation, 0, 57);
+	swapBits(decimalStringPresentation, 1, 49);
 	
 	
-	//Разделение на левые и правые полуслова по 32 бита.
+	
+	//Разделение на левые и правые слова по 32 бита.
 	int rigthPart = decimalStringPresentation;
 	int leftPart = decimalStringPresentation >>= 32;
 	cout << bitset<32>(leftPart) << endl << bitset<32>(rigthPart) << endl;
