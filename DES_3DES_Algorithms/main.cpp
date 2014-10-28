@@ -81,7 +81,7 @@ void extension32To48(const int &word, long &extendedWord)
 /*
  Проверка слабого ключа
  */
-bool chackWeakKey(const long& key)
+bool checkIsKeyWeak(const long& key)
 {
 	return !(	(key - 0x0101010101010101)
 			 && (key - 0xFEFEFEFEFEFEFEFE)
@@ -97,6 +97,9 @@ int main(int argc, const char * argv[])
 	long long decimalStringPresentation = inputString[0];
 	
 	long key = 0xBADACCE551111111;
+ //0xBADACCE551111111;
+	
+	cout << checkIsKeyWeak(key) << endl;
 	
 	// превращаем 8 символов в последовательность битов. Для хранения используется long long
 	decimalStringPresentation <<= 8;
