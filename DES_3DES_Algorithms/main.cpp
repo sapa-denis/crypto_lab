@@ -83,11 +83,15 @@ void extension32To48(const int &word, long &extendedWord)
  */
 bool checkIsKeyWeak(const long& key)
 {
-	return !(	(key - 0x0101010101010101)
-			 && (key - 0xFEFEFEFEFEFEFEFE)
-			 && (key - 0x1F1F1F1F1F1F1F1F)
-			 && (key - 0xE0E0E0E0E0E0E0E0)
-			 );
+	return (key == 0x0101010101010101)
+		|| (key == 0xFEFEFEFEFEFEFEFE)
+		|| (key == 0x1F1F1F1F1F1F1F1F)
+		|| (key == 0xE0E0E0E0E0E0E0E0);
+//	return !(	(key - 0x0101010101010101)
+//			 && (key - 0xFEFEFEFEFEFEFEFE)
+//			 && (key - 0x1F1F1F1F1F1F1F1F)
+//			 && (key - 0xE0E0E0E0E0E0E0E0)
+//			 );
 }
 
 int main(int argc, const char * argv[])
@@ -126,6 +130,12 @@ int main(int argc, const char * argv[])
 	//Разделение на левые и правые слова по 32 бита.
 	int rigthPart = decimalStringPresentation;
 	int leftPart = decimalStringPresentation >>= 32;
+	
+	/*
+	leftPart = (keyWithoutParityBits & 0xFFFFFFFF);
+	leftPart = (keyWithoutParityBits & 0xFFFFFFFF00000000) >> 32;
+	 */
+	
 	cout << bitset<32>(leftPart) << endl << bitset<32>(rigthPart) << endl;
 	
 	
