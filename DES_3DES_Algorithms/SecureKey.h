@@ -13,18 +13,21 @@
 
 class SecureKey {
 public:
-	SecureKey();
-	~SecureKey();
+	SecureKey(long userKey);
+	virtual ~SecureKey();
 
 public:
-	void removingParityBits();
+	long getSecureKeyForNextIteration();
 	
 	
 private:
-	int getShiftingBits();
-	
+	short getShiftingBits();
+	void removingParityBits();
+	void leftShifting(short bits);
+	void calculateSekureKey(const long &source);
 private:
 	long originalKey;
+	long lastCalculatedKey;
 	
 	int countIterations;
 	
