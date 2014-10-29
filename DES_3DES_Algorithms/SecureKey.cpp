@@ -13,7 +13,7 @@ SecureKey::SecureKey(long userKey)
 	,lastCalculatedKey(0)
 	,originalKey(userKey)
 {
-	
+	removingParityBits();
 }
 
 SecureKey::~SecureKey()
