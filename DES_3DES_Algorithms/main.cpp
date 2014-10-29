@@ -239,7 +239,6 @@ void extension32To48(const int &word, long &extendedWord)
 	extendedWord |= ((word >> 0) & 1);
 	extendedWord <<= 1;
 	extendedWord |= ((word >> 31) & 1);
-	extendedWord <<= 1;
 }
 
 /*
