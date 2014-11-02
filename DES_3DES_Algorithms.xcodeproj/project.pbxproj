@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		EA84ACC419D8B510004B54E5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA84ACC319D8B510004B54E5 /* main.cpp */; };
 		EAAF580E1A00283900298013 /* SecureKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAAF580C1A00283900298013 /* SecureKey.cpp */; };
+		EAE7C6F71A06D98F0067BA6C /* Permutation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAE7C6F51A06D98F0067BA6C /* Permutation.cpp */; };
+		EAE7C6FA1A06DD530067BA6C /* ExtendedWord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAE7C6F81A06DD530067BA6C /* ExtendedWord.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +30,10 @@
 		EA84ACC319D8B510004B54E5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		EAAF580C1A00283900298013 /* SecureKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SecureKey.cpp; sourceTree = "<group>"; };
 		EAAF580D1A00283900298013 /* SecureKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecureKey.h; sourceTree = "<group>"; };
+		EAE7C6F51A06D98F0067BA6C /* Permutation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Permutation.cpp; sourceTree = "<group>"; };
+		EAE7C6F61A06D98F0067BA6C /* Permutation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Permutation.h; sourceTree = "<group>"; };
+		EAE7C6F81A06DD530067BA6C /* ExtendedWord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExtendedWord.cpp; sourceTree = "<group>"; };
+		EAE7C6F91A06DD530067BA6C /* ExtendedWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtendedWord.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +69,10 @@
 				EA84ACC319D8B510004B54E5 /* main.cpp */,
 				EAAF580C1A00283900298013 /* SecureKey.cpp */,
 				EAAF580D1A00283900298013 /* SecureKey.h */,
+				EAE7C6F51A06D98F0067BA6C /* Permutation.cpp */,
+				EAE7C6F61A06D98F0067BA6C /* Permutation.h */,
+				EAE7C6F81A06DD530067BA6C /* ExtendedWord.cpp */,
+				EAE7C6F91A06DD530067BA6C /* ExtendedWord.h */,
 			);
 			path = DES_3DES_Algorithms;
 			sourceTree = "<group>";
@@ -123,7 +133,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE7C6F71A06D98F0067BA6C /* Permutation.cpp in Sources */,
 				EAAF580E1A00283900298013 /* SecureKey.cpp in Sources */,
+				EAE7C6FA1A06DD530067BA6C /* ExtendedWord.cpp in Sources */,
 				EA84ACC419D8B510004B54E5 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

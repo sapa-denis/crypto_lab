@@ -8,6 +8,13 @@
 
 #include "SecureKey.h"
 
+//const int G[48] = {3, 11, 19, ...};
+
+//const int H[48] = {31, 26, 35, ...};
+
+const int bitsShifting[16] = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
+
+
 SecureKey::SecureKey(long userKey)
 	:countIterations(0)
 	,lastCalculatedKey(0)
@@ -37,34 +44,24 @@ long SecureKey::getSecureKeyForNextIteration()
 
 short SecureKey::getShiftingBits()
 {
-	short result = ( (countIterations != 1)
-					|| (countIterations != 2)
-					|| (countIterations == 3)
-					|| (countIterations == 4)
-					|| (countIterations == 5)
-					|| (countIterations == 6)
-					|| (countIterations == 7)
-					|| (countIterations == 8)
-					|| (countIterations != 9)
-					|| (countIterations == 10)
-					|| (countIterations == 11)
-					|| (countIterations == 12)
-					|| (countIterations == 13)
-					|| (countIterations == 14)
-					|| (countIterations == 15)
-					|| (countIterations != 16) )
-				+ 1;
-	
-	return result;
+	return bitsShifting[countIterations];
 }
 
-//Применяеться ф-ция H для превращения 56-битной последовательности в 48-битный ключ
+//Применяется ф-ция H для превращения 56-битной последовательности в 48-битный ключ
 void SecureKey::calculateSekureKey(const long &source)
 {
 	lastCalculatedKey = 0;
 
-	lastCalculatedKey |= (source >> 31) & 1;
-	lastCalculatedKey <<= 1;
+// int H[48] = {...};
+	for (int i = 0; i < 48; ++i) {
+		lastCalculatedKey <<= 1;
+		lastCalculatedKey |= (source >> H[i]) & 1;
+
+	}
+	
+
+	
+	// 31
 	lastCalculatedKey |= (source >> 28) & 1;
 	lastCalculatedKey <<= 1;
 	lastCalculatedKey |= (source >> 35) & 1;
@@ -167,7 +164,7 @@ void SecureKey::calculateSekureKey(const long &source)
 	lastCalculatedKey |= (source >> 13) & 1;
 }
 
-//Применяеться ф-ция G для удаления битов четности и перестановки оставшихся битов
+//Применяется ф-ция G для удаления битов четности и перестановки оставшихся битов
 void SecureKey::removingParityBits()
 {
 	long keyWithoutParityBits = 0;
