@@ -33,26 +33,19 @@ bitset<64> stringToBitset(char *data)
 }
 
 
+
 void swapBits(long long &source, const short &first, const short &second )
 {
-	long long mask = (1 << second) | (1 << first);
+	long long mask = (1 << second) | (1 << first); // маска позиций изменяемых битов
 	
-	/*
-	std::cout << std::bitset<64>(mask) << std::endl << std::endl;
+	bool firstBit	= (source >> first) & 1; // выделяем значение первого бита
+	bool secondBit	= (source >> second) & 1; // выделяем значение второго бита
 	
-	std::cout << std::bitset<18>( (source & mask) << (abs(second - first)) & mask) << std::endl;
-	std::cout << std::bitset<18>((source >> abs(second - first)) & mask) << std::endl;
+	source = (source & ~mask) // значения битов в заданных индексах стают = 0
+			| (firstBit << second) // помещаем значение первого бита на место второго
+			| (secondBit << first); // помещаем значение второго бита на место первого
+		// объеденяем полученные результаты. 
 	
-	std::cout << std::bitset<18>( (source & mask) << (abs(second - first)) | ((source >> abs(second - first)) & mask) ) << "-" << std::endl;
-	
-	std::cout << std::bitset<18>(source & ~(1 << (second) | mask)) << std::endl;
-	
-	std::cout << std::bitset<64>(1 << second | mask) << std::endl << std::endl;
-	*/
-	
-	source = (((source & mask) << abs(second - first)) & mask)
-			| ((source >> abs(second - first)) & mask)
-			| (source & ~mask);
 	
 }
 
@@ -286,7 +279,11 @@ int main(int argc, const char * argv[])
 	
 	cout << bitset<64>(decimalStringPresentation) << "++" << endl;
 	
-	startPermutation(decimalStringPresentation);
+	
+	swapBits(decimalStringPresentation, 4, 0);
+	cout << bitset<64>(decimalStringPresentation) << "++" << endl;
+	
+//	startPermutation(decimalStringPresentation);
 	
 	
 	
