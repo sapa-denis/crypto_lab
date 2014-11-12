@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA54B4DA1A1410030097E7C2 /* UserInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA54B4D81A1410030097E7C2 /* UserInterface.cpp */; };
+		EA54B4DD1A1410220097E7C2 /* ReadWriteData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA54B4DB1A1410220097E7C2 /* ReadWriteData.cpp */; };
 		EA84ACC419D8B510004B54E5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA84ACC319D8B510004B54E5 /* main.cpp */; };
 		EAAF580E1A00283900298013 /* SecureKey.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAAF580C1A00283900298013 /* SecureKey.cpp */; };
 		EAE7C6F71A06D98F0067BA6C /* Permutation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAE7C6F51A06D98F0067BA6C /* Permutation.cpp */; };
@@ -26,6 +28,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EA54B4D61A140FF60097E7C2 /* PermutationTables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PermutationTables.h; sourceTree = "<group>"; };
+		EA54B4D71A1410030097E7C2 /* Sboxes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sboxes.h; sourceTree = "<group>"; };
+		EA54B4D81A1410030097E7C2 /* UserInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface.cpp; sourceTree = "<group>"; };
+		EA54B4D91A1410030097E7C2 /* UserInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInterface.h; sourceTree = "<group>"; };
+		EA54B4DB1A1410220097E7C2 /* ReadWriteData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReadWriteData.cpp; sourceTree = "<group>"; };
+		EA54B4DC1A1410220097E7C2 /* ReadWriteData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadWriteData.h; sourceTree = "<group>"; };
 		EA84ACC019D8B510004B54E5 /* DES_3DES_Algorithms */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DES_3DES_Algorithms; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA84ACC319D8B510004B54E5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		EAAF580C1A00283900298013 /* SecureKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SecureKey.cpp; sourceTree = "<group>"; };
@@ -73,6 +81,12 @@
 				EAE7C6F61A06D98F0067BA6C /* Permutation.h */,
 				EAE7C6F81A06DD530067BA6C /* ExtendedWord.cpp */,
 				EAE7C6F91A06DD530067BA6C /* ExtendedWord.h */,
+				EA54B4D61A140FF60097E7C2 /* PermutationTables.h */,
+				EA54B4D71A1410030097E7C2 /* Sboxes.h */,
+				EA54B4D81A1410030097E7C2 /* UserInterface.cpp */,
+				EA54B4D91A1410030097E7C2 /* UserInterface.h */,
+				EA54B4DB1A1410220097E7C2 /* ReadWriteData.cpp */,
+				EA54B4DC1A1410220097E7C2 /* ReadWriteData.h */,
 			);
 			path = DES_3DES_Algorithms;
 			sourceTree = "<group>";
@@ -134,7 +148,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EAE7C6F71A06D98F0067BA6C /* Permutation.cpp in Sources */,
+				EA54B4DA1A1410030097E7C2 /* UserInterface.cpp in Sources */,
 				EAAF580E1A00283900298013 /* SecureKey.cpp in Sources */,
+				EA54B4DD1A1410220097E7C2 /* ReadWriteData.cpp in Sources */,
 				EAE7C6FA1A06DD530067BA6C /* ExtendedWord.cpp in Sources */,
 				EA84ACC419D8B510004B54E5 /* main.cpp in Sources */,
 			);

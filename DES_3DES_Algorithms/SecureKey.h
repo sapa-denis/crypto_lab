@@ -1,10 +1,5 @@
 //
 //  SecureKey.h
-//  DES_3DES_Algorithms
-//
-//  Created by Sapa Denys on 28.10.14.
-//  Copyright (c) 2014 Sapa Denys. All rights reserved.
-//
 
 #ifndef __DES_3DES_Algorithms__SecureKey__
 #define __DES_3DES_Algorithms__SecureKey__
@@ -14,7 +9,6 @@
 class SecureKey {
 public:
 	SecureKey(long userKey);
-	virtual ~SecureKey();
 
 public:
 	long getSecureKeyForNextIteration();
@@ -23,16 +17,16 @@ public:
 private:
 	short getShiftingBits();
 	void removingParityBits();
-	void leftShifting(short bits);
-	void calculateSekureKey(const long &source);
+	void leftShifting(char bits);
+	void calculateSecureKey(const DWord &source);
 private:
-	long originalKey;
-	long lastCalculatedKey;
-	
-	int countIterations;
+	char countIterations;
 	
 	int BlockC;
 	int BlockD;
+
+	DWord originalKey;
+	DWord lastCalculatedKey;
 };
 
 #endif /* defined(__DES_3DES_Algorithms__SecureKey__) */

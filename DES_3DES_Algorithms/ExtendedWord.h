@@ -1,10 +1,4 @@
-//
-//  ExtendedWord.h
-//  DES_3DES_Algorithms
-//
-//  Created by Sapa Denys on 02.11.14.
-//  Copyright (c) 2014 Sapa Denys. All rights reserved.
-//
+
 #ifndef __DES_3DES_Algorithms__ExtendedWord__
 #define __DES_3DES_Algorithms__ExtendedWord__
 
@@ -19,18 +13,17 @@ class ExtendedWord {
 public:
 	ExtendedWord();
 	
-	ExtendedWord(const long long &sourceDWord);
-	virtual ~ExtendedWord();
+	ExtendedWord(const DWord &sourceDWord);
 	
 	long extension32To48();
 	
-	inline long getExtendedWord() { return extendedRightWord; }
+	inline DWord getExtendedWord() { return extendedRightWord; }
 	
 private:
 	
 	int leftWord;
 	int rightWord;
-	long extendedRightWord;
+	DWord extendedRightWord;
 };
 
 #endif /* defined(__DES_3DES_Algorithms__ExtendedWord__) */
