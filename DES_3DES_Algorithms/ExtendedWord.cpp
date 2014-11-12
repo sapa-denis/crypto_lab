@@ -1,6 +1,6 @@
 //  ExtendedWord.cpp
 
-#include "stdafx.h"
+
 #include "ExtendedWord.h"
 #include "PermutationTables.h"
 

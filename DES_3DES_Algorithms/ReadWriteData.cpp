@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "ReadWriteData.h"
 #include <Windows.h>
 #include <conio.h>

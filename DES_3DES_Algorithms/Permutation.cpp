@@ -1,7 +1,7 @@
 //
 //  Permutation.cpp
 
-#include "stdafx.h"
+
 #include "Permutation.h"
 
 /*void Permutation::swapBits(long long &source, const short &firstBitIndex, const short &secondBitIndex )

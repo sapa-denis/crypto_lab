@@ -6,6 +6,8 @@
 
 #include <stdio.h>
 
+typedef unsigned long long DWord;
+
 class SecureKey {
 public:
 	SecureKey(long userKey);
@@ -19,6 +21,7 @@ private:
 	void removingParityBits();
 	void leftShifting(char bits);
 	void calculateSecureKey(const DWord &source);
+	
 private:
 	char countIterations;
 	

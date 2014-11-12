@@ -12,6 +12,7 @@
 
 using namespace std;
 
+typedef unsigned long long DWord;
 
 // Расширение слова в 32 бита до 48 бит, используя матрицу Е
 

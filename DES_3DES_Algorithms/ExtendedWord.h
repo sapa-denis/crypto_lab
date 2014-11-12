@@ -3,6 +3,9 @@
 #define __DES_3DES_Algorithms__ExtendedWord__
 
 #include <stdio.h>
+
+typedef unsigned long long DWord;
+
 /*
  Принимает 64-битную последовательность
  Разбивает ее на 2 32-битных слова

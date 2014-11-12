@@ -6,6 +6,8 @@
 
 #include <stdio.h>
 
+typedef unsigned long long DWord;
+
 class Permutation {
 
 public:

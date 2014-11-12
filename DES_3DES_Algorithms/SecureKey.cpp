@@ -1,7 +1,7 @@
 //
 //  SecureKey.cpp
 
-#include "stdafx.h"
+
 #include "SecureKey.h"
 #include "PermutationTables.h"
 
@@ -16,11 +16,6 @@ SecureKey::SecureKey(long userKey):
 	removingParityBits();
 }
 
-SecureKey::~SecureKey()
-{
-	
-}
-
 long SecureKey::getSecureKeyForNextIteration()
 {
 	++countIterations;
@@ -30,7 +25,7 @@ long SecureKey::getSecureKeyForNextIteration()
 	leftShifting(shiftedBits);
 	
 	long concatinaitedBlocks = (BlockD << 28) | BlockC;
-	calculateSekureKey(concatinaitedBlocks);
+	calculateSecureKey(concatinaitedBlocks);
 	
 	return lastCalculatedKey;
 }
@@ -41,7 +36,7 @@ short SecureKey::getShiftingBits()
 }
 
 //Применяется ф-ция H для превращения 56-битной последовательности в 48-битный ключ
-void SecureKey::calculateSekureKey(const long &source)
+void SecureKey::calculateSecureKey(const DWord &source)
 {
 	lastCalculatedKey = 0;
 	for (int i = 0; i < 48; ++i) {
@@ -65,7 +60,7 @@ void SecureKey::removingParityBits()
 }
 
 //Циклический сдвиг блоков C и D на bits (1 || 2) битов влево
-void SecureKey::leftShifting(short bits)
+void SecureKey::leftShifting(char bits)
 {
 	int mask = (1 | bits) << (28 - bits);
 	short bit = (BlockC & mask) >> (28 - bits);
