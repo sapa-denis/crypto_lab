@@ -77,13 +77,10 @@ void SecureKey::leftShifting(char bits)
 /*
  Проверка слабого ключа
  */
-bool checkIsKeyWeak(const long& key)
+bool SecureKey::checkIsKeyWeak(const long& key)
 {
 	return (key == 0x0101010101010101)
 		|| (key == 0xFEFEFEFEFEFEFEFE)
 		|| (key == 0x1F1F1F1F1F1F1F1F)
 		|| (key == 0xE0E0E0E0E0E0E0E0);
 }
-
-
-

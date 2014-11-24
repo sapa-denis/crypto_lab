@@ -6,307 +6,128 @@
 
 using namespace std;
 
-#define ToDoEncrypt 1 // шифрование и сжатие
-#define ToDoDecrypt 2 // дешифрование и распаковка
-#define ToDoCancel NULL // ничего не делать
-#define PasswordLenght 30 // длина пароля
-
-int numCPU = 0; // количество ядер процессора
-HANDLE hfInputFile = NULL; // хендл входящего файла
-DWORD IFSectorPerCluster, IFBytesPerSector, IFNumberOfFreeClusters, IFTotalNumberOfClusters, IFSizeOfCluster; // параметры диска, на котором хранится входящий файл
-HANDLE hfOutputFile = NULL; // хендл исходящего файла
-DWORD OFSectorPerCluster, OFBytesPerSector, OFNumberOfFreeClusters, OFTotalNumberOfClusters, OFSizeOfCluster; // параметры диска, на котором хранится исходящий файл
-HANDLE hfTempFile = NULL; // хендл временного файла (используется, как буфер при сжатии / распаковке)
-
-wchar_t bufferInputFilePath[1025]; // полный путь и имя входящего файла в UNICODE
-char bufferInputFileName[1025]; // полный путь и имя входящего файла в ANSI
-wchar_t bufferOutputFilePath[1025]; // полный путь и имя исходящего файла в UNICODE
-char bufferOutputFileName[1025]; // полный путь и имя исходящего файла в ANSI
-wchar_t bufferTempFilePath[1025]; // полный путь и имя временного файла в UNICODE
-char bufferTempFileName[1025]; // полный путь и имя временного файла в ANSI
-
-int buf_dimension = 0; // размерность буферов входящего. исходящего и временного файлов
-wchar_t *IFbuf; // указатель на буфер входящего файла
-int IFbuf_counter = 0; // количество элементов в буфере входящего файла
-wchar_t *OFbuf; // указатель на буфер исходящего файла
-int OFbuf_counter = 0; // количество элементов в буфере исходящего файла
-wchar_t *lpPathBuffer; // указатель на буфер временного файла
-
-ReadWriteData::ReadWriteData(void)
-{
-}
-
-
-ReadWriteData::~ReadWriteData(void)
-{
-}
-
-
-
-// определение количества ядер процессора
-void GetCPUCount(HWND _window)	// определим количество ядер процессора
+// РѕРїСЂРµРґРµР»РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° СЏРґРµСЂ РїСЂРѕС†РµСЃСЃРѕСЂР°
+void ReadWriteData::GetCPUCount(HWND _window)	// РѕРїСЂРµРґРµР»РёРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЏРґРµСЂ РїСЂРѕС†РµСЃСЃРѕСЂР°
 {
 	SYSTEM_INFO siSysInfo;
 	GetSystemInfo(&siSysInfo);
 	numCPU = siSysInfo.dwNumberOfProcessors;
 	if (numCPU == 1)
 	{
-		MessageBox(_window, L"Процессор имеет только 1 ядро", L"Сообщение системы", MB_OK | MB_DEFBUTTON1 | MB_ICONINFORMATION);
+		MessageBox(_window, L"РџСЂРѕС†РµСЃСЃРѕСЂ РёРјРµРµС‚ С‚РѕР»СЊРєРѕ 1 СЏРґСЂРѕ", L"РЎРѕРѕР±С‰РµРЅРёРµ СЃРёСЃС‚РµРјС‹", MB_OK | MB_DEFBUTTON1 | MB_ICONINFORMATION);
 	}
 	else
 	{
 		//wchar_t str[20];
-		//_itow_s(numCPU, str, 10); // преобразование int в wchar_t: число (int), буфер (куда сохранить), система счисления (десятичная)
-		//MessageBox(_window,str,L"Количество ядер процессора",MB_OK | MB_DEFBUTTON1 | MB_ICONINFORMATION);
+		//_itow_s(numCPU, str, 10); // РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ int РІ wchar_t: С‡РёСЃР»Рѕ (int), Р±СѓС„РµСЂ (РєСѓРґР° СЃРѕС…СЂР°РЅРёС‚СЊ), СЃРёСЃС‚РµРјР° СЃС‡РёСЃР»РµРЅРёСЏ (РґРµСЃСЏС‚РёС‡РЅР°СЏ)
+		//MessageBox(_window,str,L"РљРѕР»РёС‡РµСЃС‚РІРѕ СЏРґРµСЂ РїСЂРѕС†РµСЃСЃРѕСЂР°",MB_OK | MB_DEFBUTTON1 | MB_ICONINFORMATION);
 		setlocale(LC_CTYPE, "Russian");
-		cout << "Количество ядер процессора: " << numCPU << endl << endl;
+		cout << "РљРѕР»РёС‡РµСЃС‚РІРѕ СЏРґРµСЂ РїСЂРѕС†РµСЃСЃРѕСЂР°: " << numCPU << endl << endl;
 		setlocale(LC_ALL, "C");
 	}
 }
 
-// открытие входящего файла
-bool GetInputFN(HWND _window)
+// РѕС‚РєСЂС‹С‚РёРµ РІС…РѕРґСЏС‰РµРіРѕ С„Р°Р№Р»Р°
+bool ReadWriteData::GetInputFN(HWND _window)
 {
 	OPENFILENAME openInputFileName;
-
-	memset(bufferInputFilePath, 0, 1025 * sizeof(wchar_t)); // очистка буфера
-	memset(&openInputFileName, 0, sizeof(OPENFILENAME)); // начальная инициализация - все нулем - по умолчанию для неиспользуемых членов структуры
-
+	
+	memset(bufferInputFilePath, 0, 1025 * sizeof(wchar_t)); // РѕС‡РёСЃС‚РєР° Р±СѓС„РµСЂР°
+	memset(&openInputFileName, 0, sizeof(OPENFILENAME)); // РЅР°С‡Р°Р»СЊРЅР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ - РІСЃРµ РЅСѓР»РµРј - РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ РЅРµРёСЃРїРѕР»СЊР·СѓРµРјС‹С… С‡Р»РµРЅРѕРІ СЃС‚СЂСѓРєС‚СѓСЂС‹
+	
 	openInputFileName.lStructSize = sizeof(OPENFILENAME);
 	openInputFileName.hwndOwner = _window;
-	openInputFileName.lpstrFilter = L"All\0*.*\0Text\0*.txt\0"; // фильтр для выбора, NULL - фильтр не установлен
+	openInputFileName.lpstrFilter = L"All\0*.*\0Text\0*.txt\0"; // С„РёР»СЊС‚СЂ РґР»СЏ РІС‹Р±РѕСЂР°, NULL - С„РёР»СЊС‚СЂ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ
 	openInputFileName.nFilterIndex = 1;
-	openInputFileName.lpstrFile = bufferInputFilePath; // возвращает полный путь и имя выбранного файла
-	openInputFileName.nMaxFile = 1024; // размер буфера (в байтах - для ANSI, в символах для Unicode), возвращающего полный путь и имя выбранного файла - на единицу меньше, чем sizeof(bufferInputFilePath)
-	openInputFileName.lpstrTitle = L"Выберите входящий файл";
+	openInputFileName.lpstrFile = bufferInputFilePath; // РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рё РёРјСЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ С„Р°Р№Р»Р°
+	openInputFileName.nMaxFile = 1024; // СЂР°Р·РјРµСЂ Р±СѓС„РµСЂР° (РІ Р±Р°Р№С‚Р°С… - РґР»СЏ ANSI, РІ СЃРёРјРІРѕР»Р°С… РґР»СЏ Unicode), РІРѕР·РІСЂР°С‰Р°СЋС‰РµРіРѕ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рё РёРјСЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ С„Р°Р№Р»Р° - РЅР° РµРґРёРЅРёС†Сѓ РјРµРЅСЊС€Рµ, С‡РµРј sizeof(bufferInputFilePath)
+	openInputFileName.lpstrTitle = L"Р’С‹Р±РµСЂРёС‚Рµ РІС…РѕРґСЏС‰РёР№ С„Р°Р№Р»";
 	openInputFileName.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
+	
 	if (!GetOpenFileName(&openInputFileName))
 	{
-		MessageBox(_window, L"Файл не выбран!", L"Сообщение системы", MB_ICONINFORMATION);
+		MessageBox(_window, L"Р¤Р°Р№Р» РЅРµ РІС‹Р±СЂР°РЅ!", L"РЎРѕРѕР±С‰РµРЅРёРµ СЃРёСЃС‚РµРјС‹", MB_ICONINFORMATION);
 		return FALSE;
 	}
-
-	// преобразуем полный путь и имя файла из LPCWSTR к char* и сохраним в bufferInputFileName - потребуется при сжатии / распаковке
-	memset(bufferInputFileName, 0, 1025 * sizeof(char)); // очистка буфера
-	WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)bufferInputFilePath, -1, bufferInputFileName, sizeof(bufferInputFileName), NULL, NULL); // преобразование типов
-
-	// получим параметры диска, на котором расположен выбранный файл
+	
+	// РїСЂРµРѕР±СЂР°Р·СѓРµРј РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рё РёРјСЏ С„Р°Р№Р»Р° РёР· LPCWSTR Рє char* Рё СЃРѕС…СЂР°РЅРёРј РІ bufferInputFileName - РїРѕС‚СЂРµР±СѓРµС‚СЃСЏ РїСЂРё СЃР¶Р°С‚РёРё / СЂР°СЃРїР°РєРѕРІРєРµ
+	memset(bufferInputFileName, 0, 1025 * sizeof(char)); // РѕС‡РёСЃС‚РєР° Р±СѓС„РµСЂР°
+	WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)bufferInputFilePath, -1, bufferInputFileName, sizeof(bufferInputFileName), NULL, NULL); // РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ
+	
+	// РїРѕР»СѓС‡РёРј РїР°СЂР°РјРµС‚СЂС‹ РґРёСЃРєР°, РЅР° РєРѕС‚РѕСЂРѕРј СЂР°СЃРїРѕР»РѕР¶РµРЅ РІС‹Р±СЂР°РЅРЅС‹Р№ С„Р°Р№Р»
 	wchar_t bIFN[1025];
 	wcscpy_s(bIFN, 1025, bufferInputFilePath);
-	bIFN[3] = '\0'; //  строка, содержащая имя диска, должна заканчиваться нулем ("C:\"+"\0"), добавим символ 0 в 3 позицию, считая от 0, обрезав тем самым полный путь до имени диска
+	bIFN[3] = '\0'; //  СЃС‚СЂРѕРєР°, СЃРѕРґРµСЂР¶Р°С‰Р°СЏ РёРјСЏ РґРёСЃРєР°, РґРѕР»Р¶РЅР° Р·Р°РєР°РЅС‡РёРІР°С‚СЊСЃСЏ РЅСѓР»РµРј ("C:\"+"\0"), РґРѕР±Р°РІРёРј СЃРёРјРІРѕР» 0 РІ 3 РїРѕР·РёС†РёСЋ, СЃС‡РёС‚Р°СЏ РѕС‚ 0, РѕР±СЂРµР·Р°РІ С‚РµРј СЃР°РјС‹Рј РїРѕР»РЅС‹Р№ РїСѓС‚СЊ РґРѕ РёРјРµРЅРё РґРёСЃРєР°
 	if (GetDiskFreeSpace(bIFN, &IFSectorPerCluster, &IFBytesPerSector, &IFNumberOfFreeClusters, &IFTotalNumberOfClusters) == 0)
 	{
-		MessageBox(_window, L"Ошибка определения параметров диска для входящего файла!", L"Сообщение системы", MB_ICONINFORMATION);
+		MessageBox(_window, L"РћС€РёР±РєР° РѕРїСЂРµРґРµР»РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ РґРёСЃРєР° РґР»СЏ РІС…РѕРґСЏС‰РµРіРѕ С„Р°Р№Р»Р°!", L"РЎРѕРѕР±С‰РµРЅРёРµ СЃРёСЃС‚РµРјС‹", MB_ICONINFORMATION);
 		return FALSE;
 	}
-	// определим размер кластера
+	// РѕРїСЂРµРґРµР»РёРј СЂР°Р·РјРµСЂ РєР»Р°СЃС‚РµСЂР°
 	IFSizeOfCluster = IFSectorPerCluster * IFBytesPerSector;
-
+	
 	return TRUE;
 }
 
-// открытие (создание) исходящего файла
-bool GetOutputFN(HWND _window)
+// РѕС‚РєСЂС‹С‚РёРµ (СЃРѕР·РґР°РЅРёРµ) РёСЃС…РѕРґСЏС‰РµРіРѕ С„Р°Р№Р»Р°
+bool ReadWriteData::GetOutputFN(HWND _window)
 {
 	OPENFILENAME openOutputFileName;
-
-	memset(bufferOutputFilePath, 0, 1025 * sizeof(wchar_t)); // очистка буфера
-	memset(&openOutputFileName, 0, sizeof(OPENFILENAME)); // начальная инициализация - все нулем - по умолчанию для неиспользуемых членов структуры
-
+	
+	memset(bufferOutputFilePath, 0, 1025 * sizeof(wchar_t)); // РѕС‡РёСЃС‚РєР° Р±СѓС„РµСЂР°
+	memset(&openOutputFileName, 0, sizeof(OPENFILENAME)); // РЅР°С‡Р°Р»СЊРЅР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ - РІСЃРµ РЅСѓР»РµРј - РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ РЅРµРёСЃРїРѕР»СЊР·СѓРµРјС‹С… С‡Р»РµРЅРѕРІ СЃС‚СЂСѓРєС‚СѓСЂС‹
+	
 	openOutputFileName.lStructSize = sizeof(OPENFILENAME);
 	openOutputFileName.hwndOwner = _window;
-	openOutputFileName.lpstrFilter = L"All\0*.*\0Text\0*.txt\0"; // фильтр для выбора, NULL - фильтр не установлен
+	openOutputFileName.lpstrFilter = L"All\0*.*\0Text\0*.txt\0"; // С„РёР»СЊС‚СЂ РґР»СЏ РІС‹Р±РѕСЂР°, NULL - С„РёР»СЊС‚СЂ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ
 	openOutputFileName.nFilterIndex = 1;
-	openOutputFileName.lpstrFile = bufferOutputFilePath; // возвращает полный путь и имя выбранного файла
-	openOutputFileName.nMaxFile = 1024; // размер буфера (в байтах - для ANSI, в символах для Unicode), возвращающего полный путь и имя выбранного файла - на единицу меньше, чем sizeof(bufferOutputFilePath)
-	openOutputFileName.lpstrTitle = L"Выберите исходящий файл";
+	openOutputFileName.lpstrFile = bufferOutputFilePath; // РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рё РёРјСЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ С„Р°Р№Р»Р°
+	openOutputFileName.nMaxFile = 1024; // СЂР°Р·РјРµСЂ Р±СѓС„РµСЂР° (РІ Р±Р°Р№С‚Р°С… - РґР»СЏ ANSI, РІ СЃРёРјРІРѕР»Р°С… РґР»СЏ Unicode), РІРѕР·РІСЂР°С‰Р°СЋС‰РµРіРѕ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рё РёРјСЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ С„Р°Р№Р»Р° - РЅР° РµРґРёРЅРёС†Сѓ РјРµРЅСЊС€Рµ, С‡РµРј sizeof(bufferOutputFilePath)
+	openOutputFileName.lpstrTitle = L"Р’С‹Р±РµСЂРёС‚Рµ РёСЃС…РѕРґСЏС‰РёР№ С„Р°Р№Р»";
 	openOutputFileName.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
-
+	
 	if (!GetSaveFileName(&openOutputFileName))
 	{
-		MessageBox(_window, L"Файл не выбран!", L"Сообщение системы", MB_ICONINFORMATION);
+		MessageBox(_window, L"Р¤Р°Р№Р» РЅРµ РІС‹Р±СЂР°РЅ!", L"РЎРѕРѕР±С‰РµРЅРёРµ СЃРёСЃС‚РµРјС‹", MB_ICONINFORMATION);
 		return FALSE;
 	}
-
-	// преобразуем полный путь и имя файла из LPCWSTR к char* и сохраним в bufferOutputFileName - потребуется при сжатии / распаковке
-	memset(bufferOutputFileName, 0, 1025 * sizeof(char)); // очистка буфера
-	WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)bufferOutputFilePath, -1, bufferOutputFileName, sizeof(bufferOutputFileName), NULL, NULL); // преобразование типов
-
-	// получим параметры диска, на котором расположен выбранный файл
+	
+	// РїСЂРµРѕР±СЂР°Р·СѓРµРј РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рё РёРјСЏ С„Р°Р№Р»Р° РёР· LPCWSTR Рє char* Рё СЃРѕС…СЂР°РЅРёРј РІ bufferOutputFileName - РїРѕС‚СЂРµР±СѓРµС‚СЃСЏ РїСЂРё СЃР¶Р°С‚РёРё / СЂР°СЃРїР°РєРѕРІРєРµ
+	memset(bufferOutputFileName, 0, 1025 * sizeof(char)); // РѕС‡РёСЃС‚РєР° Р±СѓС„РµСЂР°
+	WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)bufferOutputFilePath, -1, bufferOutputFileName, sizeof(bufferOutputFileName), NULL, NULL); // РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ
+	
+	// РїРѕР»СѓС‡РёРј РїР°СЂР°РјРµС‚СЂС‹ РґРёСЃРєР°, РЅР° РєРѕС‚РѕСЂРѕРј СЂР°СЃРїРѕР»РѕР¶РµРЅ РІС‹Р±СЂР°РЅРЅС‹Р№ С„Р°Р№Р»
 	wchar_t bOFN[1025];
 	wcscpy_s(bOFN, 1025, bufferOutputFilePath);
-	bOFN[3] = '\0'; //  строка, содержащая имя диска, должна заканчиваться нулем ("C:\"+"\0"), добавим символ 0 в 3 позицию, считая от 0, обрезав тем самым полный путь до имени диска
+	bOFN[3] = '\0'; //  СЃС‚СЂРѕРєР°, СЃРѕРґРµСЂР¶Р°С‰Р°СЏ РёРјСЏ РґРёСЃРєР°, РґРѕР»Р¶РЅР° Р·Р°РєР°РЅС‡РёРІР°С‚СЊСЃСЏ РЅСѓР»РµРј ("C:\"+"\0"), РґРѕР±Р°РІРёРј СЃРёРјРІРѕР» 0 РІ 3 РїРѕР·РёС†РёСЋ, СЃС‡РёС‚Р°СЏ РѕС‚ 0, РѕР±СЂРµР·Р°РІ С‚РµРј СЃР°РјС‹Рј РїРѕР»РЅС‹Р№ РїСѓС‚СЊ РґРѕ РёРјРµРЅРё РґРёСЃРєР°
 	if (GetDiskFreeSpace(bOFN, &OFSectorPerCluster, &OFBytesPerSector, &OFNumberOfFreeClusters, &OFTotalNumberOfClusters) == 0)
 	{
-		MessageBox(_window, L"Ошибка определения параметров диска для исходящего файла!", L"Сообщение системы", MB_ICONINFORMATION);
+		MessageBox(_window, L"РћС€РёР±РєР° РѕРїСЂРµРґРµР»РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ РґРёСЃРєР° РґР»СЏ РёСЃС…РѕРґСЏС‰РµРіРѕ С„Р°Р№Р»Р°!", L"РЎРѕРѕР±С‰РµРЅРёРµ СЃРёСЃС‚РµРјС‹", MB_ICONINFORMATION);
 		return FALSE;
 	}
-	// определим размер кластера
+	// РѕРїСЂРµРґРµР»РёРј СЂР°Р·РјРµСЂ РєР»Р°СЃС‚РµСЂР°
 	OFSizeOfCluster = OFSectorPerCluster * OFBytesPerSector;
-
+	
 	return TRUE;
 }
 
-// создание временного файла (используется, как буфер при сжатии / распаковке)
-bool GetTempFN(HWND _window)
+// СЃРѕР·РґР°РЅРёРµ РІСЂРµРјРµРЅРЅРѕРіРѕ С„Р°Р№Р»Р° (РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ, РєР°Рє Р±СѓС„РµСЂ РїСЂРё СЃР¶Р°С‚РёРё / СЂР°СЃРїР°РєРѕРІРєРµ)
+bool ReadWriteData::GetTempFN(HWND _window)
 {
-	memset(bufferTempFilePath, 0, 1025 * sizeof(wchar_t)); // очистка буфера
-	// Получим временный путь
-	GetTempPath(buf_dimension,		// длина буфера
-		lpPathBuffer);				// буфер для пути 
-
-	// Создадим временный файл. 
-	GetTempFileName(lpPathBuffer,	// каталог для временных файлов 
-		L"NEW",						// префикс имени временного файла 
-		0,							// создаем уникальное имя 
-		bufferTempFilePath);		// буфер для имени
-
-	// преобразуем полный путь и имя файла из LPCWSTR к char* и сохраним в bufferTempFileName - потребуется при сжатии / распаковке
-	memset(bufferTempFileName, 0, 1025 * sizeof(char)); // очистка буфера
-	WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)bufferTempFilePath, -1, bufferTempFileName, sizeof(bufferTempFileName), NULL, NULL); // преобразование типов
-
+	memset(bufferTempFilePath, 0, 1025 * sizeof(wchar_t)); // РѕС‡РёСЃС‚РєР° Р±СѓС„РµСЂР°
+	// РџРѕР»СѓС‡РёРј РІСЂРµРјРµРЅРЅС‹Р№ РїСѓС‚СЊ
+	GetTempPath(buf_dimension,		// РґР»РёРЅР° Р±СѓС„РµСЂР°
+				lpPathBuffer);				// Р±СѓС„РµСЂ РґР»СЏ РїСѓС‚Рё
+	
+	// РЎРѕР·РґР°РґРёРј РІСЂРµРјРµРЅРЅС‹Р№ С„Р°Р№Р».
+	GetTempFileName(lpPathBuffer,	// РєР°С‚Р°Р»РѕРі РґР»СЏ РІСЂРµРјРµРЅРЅС‹С… С„Р°Р№Р»РѕРІ
+					L"NEW",						// РїСЂРµС„РёРєСЃ РёРјРµРЅРё РІСЂРµРјРµРЅРЅРѕРіРѕ С„Р°Р№Р»Р°
+					0,							// СЃРѕР·РґР°РµРј СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ
+					bufferTempFilePath);		// Р±СѓС„РµСЂ РґР»СЏ РёРјРµРЅРё
+	
+	// РїСЂРµРѕР±СЂР°Р·СѓРµРј РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рё РёРјСЏ С„Р°Р№Р»Р° РёР· LPCWSTR Рє char* Рё СЃРѕС…СЂР°РЅРёРј РІ bufferTempFileName - РїРѕС‚СЂРµР±СѓРµС‚СЃСЏ РїСЂРё СЃР¶Р°С‚РёРё / СЂР°СЃРїР°РєРѕРІРєРµ
+	memset(bufferTempFileName, 0, 1025 * sizeof(char)); // РѕС‡РёСЃС‚РєР° Р±СѓС„РµСЂР°
+	WideCharToMultiByte(CP_ACP, 0, (LPCWSTR)bufferTempFilePath, -1, bufferTempFileName, sizeof(bufferTempFileName), NULL, NULL); // РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ
+	
 	return TRUE;
 }
-
-// выбор действия
-int ToDoSelect(HWND _window)
-{
-	DWORD dwMessageBoxResult;
-
-	dwMessageBoxResult = MessageBox(
-		NULL,																							// дескриптор окна владельца
-		L"Сжатие и кодирование (Да) | Декодирование и распаковка (Нет) | Ничего не делать (Отмена)",	// текст в окне сообщений
-		L"Выберите действие",																			// заголовок в окне сообщений
-		MB_YESNOCANCEL |																				// флаги стиля окна сообщений (кнопки Да, Нет, Отмена)
-		MB_DEFBUTTON1 |																					// выделеная кнопка
-		MB_ICONQUESTION |																				// тип иконки
-		MB_DEFAULT_DESKTOP_ONLY
-		);
-	switch (dwMessageBoxResult)
-	{
-	case IDYES:
-		return ToDoEncrypt;
-	case IDNO:
-		return ToDoDecrypt;
-	case IDCANCEL:
-		return ToDoCancel;
-	}
-	return ToDoCancel;
-}
-
-
-// наименьшее общее кратное двух чисел
-int nok(int a, int b)
-{
-	int max = b;
-	for (int i = max; i > 0; i++){
-
-		if ((i % a == 0) && (i % b == 0))
-			return i;
-	}
-	return 1;
-}
-
-
-// действия при завершении работы программы
-void WhenProgramShutdown()
-{
-	// убрать мусор
-	DeleteFile(bufferTempFilePath);
-}
-
-int _tmain(int argc, _TCHAR* argv[])
-{
-/*	int ToDoSelector; // что делать: 1 - выполнять шифрование и сжатие, 2 - выполнять дешифрование и распаковку, NULL - ничего не делать
-	DWORD dwStart = 0; // момент начала преобразования файла (как число миллисекунд, прошедшее с момента старта системы)
-	DWORD dwEnd = 0; // момент окончания преобразования файла (как число миллисекунд, прошедшее с момента старта системы)
-
-	// определим количество ядер процессора
-	GetCPUCount(NULL);
-
-	// определим полный путь и имя входящего файла, параметры диска
-	if (!GetInputFN(NULL))
-	{
-		WhenProgramShutdown();
-		return 0;
-	}
-
-	// определим полный путь и имя исходящего файла, параметры диска
-	if (!GetOutputFN(NULL))
-	{
-		WhenProgramShutdown();
-		return 0;
-	}
-
-	// установим размер буфера, как наименьшее общее кратное от размеров кластеров дисков, на которых хранятся выбранные входящий и исходящий файлы
-	buf_dimension = nok(IFSizeOfCluster, OFSizeOfCluster);
-
-	// создадим буфер входящего файла
-	IFbuf = (wchar_t *)malloc(buf_dimension * sizeof (wchar_t));
-	// создадим буфер исходящего файла
-	OFbuf = (wchar_t *)malloc(buf_dimension * sizeof (wchar_t));
-	// создадим буфер временного файла
-	lpPathBuffer = (wchar_t *)malloc(buf_dimension * sizeof (wchar_t));
-
-	// определим полный путь и имя временного файла
-	if (!GetTempFN(NULL))
-	{
-		WhenProgramShutdown();
-		return 0;
-	}
-
-	// выберем действие (выполнять сжатие и кодирование / выполнять декодирование и распаковку / ничего не делать)
-	ToDoSelector = ToDoSelect(NULL);
-	switch (ToDoSelector)
-	{
-	case ToDoEncrypt:
-	{
-						setlocale(LC_CTYPE, "Russian");
-						cout << "Выполняем сжатие и кодирование" << endl << endl;
-						setlocale(LC_ALL, "C");
-						GetPass();
-						dwStart = GetTickCount();
-
-						if (!SyncEncode(NULL))
-							break;
-
-						dwEnd = GetTickCount();
-						setlocale(LC_CTYPE, "Russian");
-						cout << "Время преобразования файла " << dwEnd - dwStart << " миллисекунд" << endl << endl;
-						setlocale(LC_ALL, "C");
-						break;
-	}
-	case ToDoDecrypt:
-	{
-						setlocale(LC_CTYPE, "Russian");
-						cout << "Выполняем декодирование и распаковку" << endl << endl;
-						setlocale(LC_ALL, "C");
-						GetPass();
-						dwStart = GetTickCount();
-
-						if (!SyncDecode(NULL))
-							break;
-
-						dwEnd = GetTickCount();
-						setlocale(LC_CTYPE, "Russian");
-						cout << "Время преобразования файла " << dwEnd - dwStart << " миллисекунд" << endl << endl;
-						setlocale(LC_ALL, "C");
-						break;
-	}
-	case ToDoCancel:
-	{
-					   setlocale(LC_CTYPE, "Russian");
-					   cout << "Ничего не делаем" << endl << endl;
-					   setlocale(LC_ALL, "C");
-					   break;
-	}
-	}
-
-	// действия при завершении работы программы
-	WhenProgramShutdown();
-*/	return 0;
-}
-
-
-

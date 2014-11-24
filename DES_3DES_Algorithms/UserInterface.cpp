@@ -5,3 +5,8 @@
 UserInterface::UserInterface(void)
 {
 }
+
+void UserInterface::showMenu()
+{
+	
+}

@@ -22,6 +22,7 @@ private:
 	void leftShifting(char bits);
 	void calculateSecureKey(const DWord &source);
 	
+	bool checkIsKeyWeak(const long& key);
 private:
 	char countIterations;
 	
